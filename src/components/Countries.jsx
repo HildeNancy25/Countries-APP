@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from 'react'
+import Pagination from './Pagination';
+
 function Countries() {
    const[countryData, setCountryData] =  useState([]);
    const [currentPage] = useState(1);
@@ -20,6 +22,13 @@ function Countries() {
         </div>
         <select>
           <option value="Select Continent">Select Continent</option>
+          <option value="Select Continent">Africa</option>
+          <option value="Select Continent">Europe</option>
+          <option value="Select Continent">Asia</option>
+          <option value="Select Continent">Australia</option>
+          <option value="Select Continent">Antarctica</option>
+          <option value="Select Continent">North America</option>
+          <option value="Select Continent">South America</option>
             </select>
             </div>
             <div className=''>
