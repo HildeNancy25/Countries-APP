@@ -15,7 +15,7 @@ function Countries() {
    const currentCountries = countryData.slice(indexOfFirstCountry, indexOfLastCountry);
   return (
      <section>
-      <div className='flex justify-around mb-10 mt-10'>
+      <div className='flex justify-between mb-10 mt-10'>
         <div >
           <h2>View Countries</h2>
           <p>Page 1 of 5</p>
