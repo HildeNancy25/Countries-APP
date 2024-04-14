@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-import Pagination from './Pagination';
 
 function Countries() {
    const[countryData, setCountryData] =  useState([]);
