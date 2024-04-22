@@ -4,7 +4,7 @@ import { SectionHolder } from '../styled-components/GeneralComponents'
 
 const Header = () => {
   return (
-    <section className="flex flex-col items-center text-white bg-[url('banner-background.jpg')]">
+    <section className="flex flex-col items-center  bg-[url('/src/assets/banner-background.jpg')]">
       <SectionHolder className='mb-20 flex-col gap-10'>
         <NavBar />
         <h1 className='text-4xl font-bold'>Country API App</h1>
