@@ -1,2 +1,2 @@
 # Countries-APP
-This is a countries app that uses https://restcountries.com/ API to fetch and display all world countries and more.
+this country app is deployed at https://countries-app-3ge0.onrender.com 
