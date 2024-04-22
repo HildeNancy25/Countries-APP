@@ -12,7 +12,7 @@ const NavBar = () => {
         <MobileLogo />
       </Link>
       <NavLink to={'/'} className={'block md:hidden'}><CiMenuFries /></NavLink>
-      <NavLink to={'/'} className={'hidden md:block'}>Countries</NavLink>
+      <NavLink to={'/'} className={'text-white hidden md:block'}>Countries</NavLink>
     </div>
   )
 }
