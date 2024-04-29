@@ -1,141 +1,116 @@
-import React, { useState, useEffect } from 'react';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-  const [pageInput, setPageInput] = useState('');
-  const [searchInput, setSearchInput] = useState('');
-  const [countryData, setCountryData] = useState([]);
-  const [filteredCountries, setFilteredCountries] = useState([]);
-  const [displayMode, setDisplayMode] = useState('card'); // Default mode is 'card'
-  const countriesPerPage = 50;
-  
-  useEffect(() => {
-    fetch('https://restcountries.com/v3/all')
-      .then(response => response.json())
-      .then(data => {
-        setCountryData(data);
-        setFilteredCountries(data);
-      });
-  }, []);
-  useEffect(() => {
-    const filtered = countryData.filter(country =>
-      country.name.common.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    setFilteredCountries(filtered);
-  }, [searchInput, countryData]);
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      onPageChange(page);
+import React from 'react'
+const Pagination = ({ searchParams, setSearchParams }) => {
+  const ChangePage = (pageNumber) => {
+    setSearchParams({
+      page: pageNumber
+    });
+    window.location.reload();
+  }
+  const GoToPrevious = () => {
+    let currentPage = Number(searchParams.get('page'));
+    if (currentPage > 1) {
+      ChangePage(currentPage - 1);
     }
   };
-  const handleInputChange = (e) => {
-    setPageInput(e.target.value);
-  };
-  const handleInputKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      const pageNumber = parseInt(pageInput);
-      if (!isNaN(pageNumber)) {
-        handlePageChange(pageNumber);
-      }
+  const GoToNext = () => {
+    let currentPage = Number(searchParams.get('page'));
+    if (currentPage < 5) {
+      ChangePage(currentPage + 1);
     }
   };
-  const toggleDisplayMode = () => {
-    setDisplayMode(prevMode => prevMode === 'card' ? 'table' : 'card');
-  };
-  const renderCountries = () => {
-    if (displayMode === 'card') {
-      return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {currentCountries.map(country => (
-            <div className="flex flex-col items-center" key={country.name.common}>
-              <img src={`https://flagcdn.com/${country.cca2.toLowerCase()}.svg`} alt={country.name.common} className="w-[250px] h-[120px]" />
-              <strong>{country.name.common}</strong>
-              <p><strong>Capital</strong>: {country.capital}</p>
-              <p><strong>Population</strong>: {country.population}</p>
-              <p><strong>Region</strong>: {country.region}</p>
-            </div>
-          ))}
-        </div>
-      );
-    } else if (displayMode === 'table') {
-      return (
-        <table className="w-full">
-          <thead>
-            <tr>
-              <th>Flag</th>
-              <th>Name</th>
-              <th>Capital</th>
-              <th>Population</th>
-              <th>Region</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentCountries.map(country => (
-              <tr key={country.name.common}>
-                <td><img src={`https://flagcdn.com/${country.cca2.toLowerCase()}.svg`} alt={country.name.common} className="w-[50px] h-[30px]" /></td>
-                <td>{country.name.common}</td>
-                <td>{country.capital}</td>
-                <td>{country.population}</td>
-                <td>{country.region}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      );
-    }
-  };
-  const renderPageNumbers = () => {
-    const pages = [];
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(
-        <button
-          key={i}
-          onClick={() => handlePageChange(i)}
-          className={`mx-1 px-3 py-1 rounded ${
-            i === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
-          }`}
-        >
-          {i}
-        </button>
-      );
-    }
-    return pages;
-  };
-  const currentCountries = filteredCountries.slice((currentPage - 1) * countriesPerPage, currentPage * countriesPerPage);
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-      <div className="flex justify-between items-center mb-8">
-        <input
-          type="text"
-          placeholder="Search by country name"
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className="px-40 py-2 bg-black border text-white border-gray-300 rounded-md mr-2"
-        />
-        <div>
-          <button onClick={toggleDisplayMode} className="px-3 py-1 rounded bg-gray-200 text-gray-700 mr-2">
-            {displayMode === 'card' ? 'Display as Table' : 'Display as Cards'}
-          </button>
-        </div>
-      </div>
-      {renderCountries()}
-      <div className="flex justify-center items-center pt-6">
+    <ol className="flex justify-center gap-1 text-xs font-medium">
+      <li>
         <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-3 py-1 rounded bg-gray-200 text-gray-700 mr-2"
+          type='button'
+          onClick={GoToPrevious}
+          className="inline-flex size-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180"
         >
-          <FaChevronLeft className="mr-1" />
+          <span className="sr-only">Prev Page</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-3 w-3"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
         </button>
-        {renderPageNumbers()}
+      </li>
+      <li>
         <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-3 py-1 rounded bg-gray-200 text-gray-700 ml-2"
+          type='button'
+          onClick={() => { ChangePage(1) }}
+          className="block size-8 rounded border border-gray-100 bg-white text-center leading-8 text-gray-900"
         >
-          <FaChevronRight className="ml-1" />
+          1
         </button>
-      </div>
-    </div>
-  );
-};
-export default Pagination;
+      </li>
+      {/* <li className="block size-8 rounded border-blue-600 bg-blue-600 text-center leading-8 text-white">
+        2
+      </li> */}
+      <li>
+        <button
+          type='button'
+          onClick={() => { ChangePage(2) }}
+          className="block size-8 rounded border border-gray-100 bg-white text-center leading-8 text-gray-900"
+        >
+          2
+        </button>
+      </li>
+      <li>
+        <button
+          type='button'
+          onClick={() => { ChangePage(3) }}
+          className="block size-8 rounded border border-gray-100 bg-white text-center leading-8 text-gray-900"
+        >
+          3
+        </button>
+      </li>
+      <li>
+        <button
+          type='button'
+          onClick={() => { ChangePage(4) }}
+          className="block size-8 rounded border border-gray-100 bg-white text-center leading-8 text-gray-900"
+        >
+          4
+        </button>
+      </li>
+      <li>
+        <button
+          type='button'
+          onClick={() => { ChangePage(5) }}
+          className="block size-8 rounded border border-gray-100 bg-white text-center leading-8 text-gray-900"
+        >
+          5
+        </button>
+      </li>
+      <li>
+        <button
+          type='button'
+          onClick={GoToNext}
+          className="inline-flex size-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180"
+        >
+          <span className="sr-only">Next Page</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-3 w-3"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+      </li>
+    </ol>
+  )
+}
+export default Pagination

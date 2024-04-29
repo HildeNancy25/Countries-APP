@@ -1,23 +1,33 @@
-import React, {useState, useEffect} from 'react'
+import React, { useEffect, useState } from 'react';
+import { getCountries } from '../apis/countries';
+import { useSearchParams } from 'react-router-dom';
+import Pagination from './Pagination';
 
-function Countries() {
-   const[countryData, setCountryData] =  useState([]);
-   const [currentPage] = useState(1);
-   const countriesPerPage = 250;
-   useEffect(() =>{
-    fetch('https://restcountries.com/v3/all')
-    .then(response => response.json())
-    .then(data => setCountryData(data));
-   }, []);
-   const indexOfLastCountry = currentPage * countriesPerPage;
-   const indexOfFirstCountry = indexOfLastCountry - countriesPerPage;
-   const currentCountries = countryData.slice(indexOfFirstCountry, indexOfLastCountry);
+
+const Countries = () => {
+  const [listOfCountries, setListOfCountries] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams({ page: 1 });
+  useEffect(() => {
+    let pageNumber = Number(searchParams.get('page'));
+    setLoading(true);
+    getCountries(pageNumber)
+    .then((data) => {
+      setListOfCountries(data);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+    .finally(()=> {
+      setLoading(false);
+    })
+  },[]);
   return (
-     <section>
-      <div className='flex justify-between mb-10 mt-10'>
-        <div >
-          <h2>View Countries</h2>
-          <p>Page 1 of 5</p>
+    <div>
+      <div id='top-section' className='flex justify-around mb-10 mt-10'>
+        <div>
+          <h3>View Countries</h3>
+          <p>Page {Number(searchParams.get('page'))} of 5</p>
         </div>
         <select>
           <option value="Select Continent">Select Continent</option>
@@ -28,22 +38,25 @@ function Countries() {
           <option value="Select Continent">Antarctica</option>
           <option value="Select Continent">North America</option>
           <option value="Select Continent">South America</option>
-            </select>
+        </select>
+      </div>
+      <div id='countries' className='flex flex-wrap w-full justify-between md:gap-1 items-center p-16'>
+        {listOfCountries.length > 0 && listOfCountries.map((country, index) => {
+          return (
+            <div key={index} className='w-5/12 md:w-1/5 mb-5 text-gray-500'>
+              <img src={country.flags.svg} alt={country.flags.alt} />
+              <p>{country.name.common}</p>
+              <p>{country.capital}</p>
+              <p>{country.population}</p>
+              <p>{country.continents}</p>
             </div>
-            <div className=''>
-            <ul className="flex flex-wrap gap-10 justify-center items-center">
-           {currentCountries.map(country => (
-             <div className="items-center md:w-4/12 lg:w-2/12 justify-center" key={country.name.common}>
-              <img src={`https://flagcdn.com/${country.cca2.toLowerCase()}.svg`} alt={country.name.common} className="w-[250px] items-center h-[120px]"/>
-              <strong>{country.name.common}</strong>
-             <p><strong>Capital</strong>: {country.capital}</p>
-             <p><strong>Population</strong>: {country.population}</p>
-               <p><strong>Region</strong>: {country.region}</p>
-            </div>
-           ))}
-         </ul>
+          )
+        })}
+        {loading && <p>Loading...</p>}
+        {(!loading && listOfCountries.length === 0) && <p>No countries available</p>}
+      </div>
+      <Pagination searchParams={searchParams} setSearchParams={setSearchParams}/>
     </div>
-    </section>
-   );
+  )
 }
-export default Countries;
+export default Countries
